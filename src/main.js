@@ -2,23 +2,24 @@ import $ from 'jquery';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
+import { MovieService } from './../src/movies.js';
+
 
 $(document).ready(function() {
+
   $('#weatherLocation').click(function() {
     const city = $('#location').val();
     $('#location').val("");
 
-    asyncApiCall();
+    (async () => {
+      let movieService = new MovieService();
+      const response = await movieService.getWeatherByCity(city);
+      getElements(response);
+    })();
 
-    async function asyncApiCall() {
-      let response = await fetch(`http://www.omdbapi.com/?t=${city}&apikey=${process.env.API_KEY}`);
-      let jsonifiedResponse = await response.json();
-      getElements(jsonifiedResponse);
-    }
-
-    const getElements = function(response) {
+    function getElements(response) {
       $('.showHumidity').text(`${response.Title}`);
-       $('.showTemp').text(`${response.Director}`);
+      $('.showTemp').text(`${response.Director}`);
     }
   });
 });
